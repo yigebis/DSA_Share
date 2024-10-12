@@ -33,7 +33,7 @@ Registers a new user (shop owner).
   "password" : required, length >= 8, lower_case >= 2, upper_case >= 1, special >= 1  
 
 
-- **Responses:**
+- **Responses:**  
     -200 OK - Registration successful, verification email sent.  
     -400 Bad Request - Invalid request payload.  
     -409 Conflict - User already exists or pending verification.  
