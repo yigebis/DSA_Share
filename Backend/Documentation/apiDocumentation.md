@@ -25,18 +25,18 @@ Registers a new user (shop owner).
     "password": "string"
   }
 
-- **Validation:**
-  "first_name" : required, minimum_length = 1, maximum_length = 50
-  "last_name" : required, minimum_length = 1, maximum_length = 50
-  "sex" : required, can be of types "M" and "F"
-  "email" : required, must be an email
-  "password" : required, length >= 8, lower_case >= 2, upper_case >= 1, special >= 1
+- **Validation:**  
+  "first_name" : required, minimum_length = 1, maximum_length = 50  
+  "last_name" : required, minimum_length = 1, maximum_length = 50  
+  "sex" : required, can be of types "M" and "F"  
+  "email" : required, must be an email  
+  "password" : required, length >= 8, lower_case >= 2, upper_case >= 1, special >= 1  
 
 
 - **Responses:**
-    -200 OK - Registration successful, verification email sent.
-    -400 Bad Request - Invalid request payload.
-    -409 Conflict - User already exists or pending verification.
+    -200 OK - Registration successful, verification email sent.  
+    -400 Bad Request - Invalid request payload.  
+    -409 Conflict - User already exists or pending verification.  
 
 
 ### **User Login**
