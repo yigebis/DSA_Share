@@ -19,6 +19,8 @@ var ErrNotVerified = errors.New("unverified user")
 var ErrSamePassword = errors.New("old and new password should be different")
 var ErrNotAuthorized = errors.New("unauthorized")
 
+var ErrLectureNotFound = errors.New("not found")
+
 type Error struct{}
 
 func NewErrorService() UseCase.IErrorService{
@@ -67,4 +69,8 @@ func (e *Error) SamePassword() (int, error){
 
 func (e *Error) NotAuthorized() (int, error){
 	return http.StatusUnauthorized, ErrNotAuthorized
+}
+
+func (e *Error) LectureNotFound() (int, error){
+	return http.StatusNotFound, ErrLectureNotFound
 }

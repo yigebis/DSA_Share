@@ -11,7 +11,7 @@ import (
 type MailService struct{
 	Sender string //eg. yigerem4@gmail.com
 	Password string
-	From string //eg. CS-Interact.com
+	From string //eg. DSAShare.com
 }
 
 func NewMailService(sender, password, from string) UseCase.IMailService {
