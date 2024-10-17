@@ -28,6 +28,7 @@ type IUserUseCase interface {
 type IUserRepository interface {
 	CreateUser(user *Domain.User) error
 	GetUserByEmail(email string) (*Domain.User, error)
+	GetUserByUserName(user_name string) (*Domain.User, error)
 	VerifyUser(user *Domain.User) error
 	GetUserByVerificationToken(token string) (*Domain.User, error)
 	GetUserCount() (int64, error)
@@ -36,8 +37,9 @@ type IUserRepository interface {
 	InvalidateResetToken(email string) error
 	GetResetTokenByEmail(email string) (string, error)
 
-	UpdateUser(user *Domain.User) error
+	UpdateUser(user *Domain.User) error 
 	DeleteUser(email string) error
+	IncrementLectureCount(user_name string) error
 }
 
 type IPasswordService interface {

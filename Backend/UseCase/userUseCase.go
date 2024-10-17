@@ -47,6 +47,16 @@ func (uuc *UserUseCase) Register(user *Domain.User) (int, error){
 		return uuc.ErrorService.UserExists()
 	}
 
+	// check if the user with this user name has already been registered
+	existingUser2, err := uuc.UserRepo.GetUserByUserName(user.UserName)
+	if err == nil {
+		if !existingUser2.Verified{
+			return uuc.ErrorService.PendingVerification()
+		}
+
+		return uuc.ErrorService.UserExists()
+	}
+
 	// Set verified field false
 	user.Verified = false
 

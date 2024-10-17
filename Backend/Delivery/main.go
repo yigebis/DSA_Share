@@ -45,16 +45,22 @@ func main(){
 
 	fmt.Println("Connected to db!")
 	user_collection := client.Database("DSAShare").Collection("users")
-	user_context := context.TODO()
-	ur := Repository.NewUserRepository(user_context, user_collection)
-
-	ps := Infrastructure.NewPasswordService()
-
+	lecture_collection := client.Database("DSAShare").Collection("lectures")
 	token_collection := client.Database("DSAShare").Collection("refreshers")
+	topic_collection := client.Database("DSAShare").Collection("topics")
+
+	user_context := context.TODO()
+	lecture_context := context.TODO()
 	token_context := context.TODO()
+	topic_context := context.TODO()
+
+	ur := Repository.NewUserRepository(user_context, user_collection)
+	lr := Repository.NewLectureRepository(lecture_context, lecture_collection)
+	topr := Repository.NewTopicRepository(topic_collection, topic_context)
 	tr := Repository.NewTokenRepository(token_context, token_collection)
 
 	jwtSecret := os.Getenv("JWT_SECRET")
+	ps := Infrastructure.NewPasswordService()
 	ts := Infrastructure.NewTokenService(jwtSecret)
 	ms := Infrastructure.NewMailService(os.Getenv("SENDER_EMAIL"), os.Getenv("EMAIL_PASSWORD"), os.Getenv("FROM"))
 	es := Error.NewErrorService()
@@ -64,12 +70,14 @@ func main(){
 	rx := os.Getenv("REFRESHER_EXPIRY")
 
 	uuc := UseCase.NewUserUseCase(ur, ps, tr, ts, ms, es, ex, tx, rx)
+	luc := UseCase.NewLectureUseCase(lr, topr, ur, es)
 
 
 	// setting up the controllers
 	user_controller := Controller.NewUserController(uuc, ts)
+	lecture_controller := Controller.NewLectureController(luc)
 
 	// setting up the router
-	router := Router.NewRouter(user_controller, jwtSecret)
+	router := Router.NewRouter(user_controller, lecture_controller, jwtSecret)
 	router.Run()
 }
