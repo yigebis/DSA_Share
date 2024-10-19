@@ -7,6 +7,7 @@ import (
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -50,4 +51,57 @@ func(lr *LectureRepository)	GetAllLectures() (*[]Domain.Lecture, error){
 
 	err = cursor.All(lr.DbCtx, &lectures)
 	return &lectures, err
+}
+
+func (lr *LectureRepository) EditLecture(lecture *Domain.Lecture) error{
+	filter := bson.M{"_id" : lecture.ID}
+	var update = bson.M{}
+
+	update["last_modified_date"] = lecture.LastModifiedDate
+	if lecture.Content != ""{
+		update["content"] = lecture.Content
+	}
+	if lecture.Title != ""{
+		update["title"] = lecture.Title
+	}
+	
+	_, err := lr.Collection.UpdateOne(lr.DbCtx, filter, bson.M{"$set" : update})
+	return err
+}
+
+func (lr *LectureRepository) DeleteLecture(id string) error{
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil{
+		return err
+	}
+
+	filter := bson.M{"_id" : objID}
+	_, err = lr.Collection.DeleteOne(lr.DbCtx, filter)
+	return err
+}
+
+func (lr *LectureRepository) AddTopic(topic, lectureID string) error{
+	objID, err := primitive.ObjectIDFromHex(lectureID)
+	if err != nil{
+		return err
+	}
+
+	filter := bson.M{"_id" : objID}
+	update := bson.M{"$addToSet" : bson.M{"topics" : topic}}
+
+	_, err = lr.Collection.UpdateOne(lr.DbCtx, filter, update)
+	return err
+}
+
+func (lr *LectureRepository) RemoveTopic(topic, lectureID string) error{
+	objID, err := primitive.ObjectIDFromHex(topic)
+	if err != nil {
+		return err
+	}
+
+	filter := bson.M{"_id" : objID}
+	update := bson.M{"$pull" : bson.M{"topics" : topic}}
+
+	_, err = lr.Collection.UpdateOne(lr.DbCtx, filter, update)
+	return err
 }

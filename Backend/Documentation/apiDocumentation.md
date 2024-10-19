@@ -41,18 +41,18 @@ Registers a new user (shop owner).
 
 ### **User Login**
 
-#### `POST /login`
+#### `POST /login/email`
 Logins a user (shop owner/employee).
 
 - **Request Body:**
   ```json
   {
-    "email": "string",
+    "identifier": "string",
     "password": "string"
   }
 
 - **Validation:**
-  "email" : required
+  "identifier" : required
   "password" : required
 
 
@@ -63,10 +63,37 @@ Logins a user (shop owner/employee).
         "token" : "string",
         "refresher" : "string"
     }
-    -400 Bad Request - Invalid request payload
-                     - account not activated
+    -400 Bad Request - Invalid request payload  
                      - account not verified 
                      - invalid email or password
+
+
+#### `POST /login/user_name`
+Logins a user (shop owner/employee).
+
+- **Request Body:**
+  ```json
+  {
+    "identifier": "string",
+    "password": "string"
+  }
+
+- **Validation:**
+  "identifier" : required
+  "password" : required
+
+
+- **Responses:**
+    -200 OK - Returns JWT access and refresher tokens.
+    ```json
+    {
+        "token" : "string",
+        "refresher" : "string"
+    }
+    -400 Bad Request - Invalid request payload  
+                     - account not verified 
+                     - invalid user_name or password  
+
 
 ### **Email verification**
 

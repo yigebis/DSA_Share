@@ -20,7 +20,7 @@ type User struct{
 }
 
 type Credential struct{
-	Email string `json:"email" bson:"email"`
+	Identifier string `json:"identifier" bson:"identifier"`
 	Password string `json:"password" bson:"password"`
 }
 

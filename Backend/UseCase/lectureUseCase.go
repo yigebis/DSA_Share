@@ -69,3 +69,52 @@ func (luc *LectureUseCase) GetLectureByID(id string) (*Domain.Lecture, int, erro
 	code, err := luc.ErrorService.NoError()
 	return lecture, code, err
 }
+
+func (luc *LectureUseCase) EditLecture(lecture *Domain.Lecture) (int, error){
+	// make sure to change last modified date of the lecture
+	lecture.LastModifiedDate = time.Now()
+	
+	err := luc.LectureRepository.EditLecture(lecture)
+	if err != nil{
+		return luc.ErrorService.InternalServer()
+	}
+
+	return luc.ErrorService.NoError()
+}
+
+func (luc *LectureUseCase) DeleteLecture(id string) (int, error){
+	err := luc.LectureRepository.DeleteLecture(id)
+	if err != nil {
+		return luc.ErrorService.InternalServer()
+	}
+
+	return luc.ErrorService.NoError()
+}
+
+func (luc *LectureUseCase) AddTopic(topic, lectureID string) (int, error){
+	err := luc.LectureRepository.AddTopic(topic, lectureID)
+	if err != nil {
+		return luc.ErrorService.InternalServer()
+	}
+
+	err = luc.TopicRepository.IncrementTopicCount(topic, 1)
+	if err != nil {
+		return luc.ErrorService.InternalServer()
+	}
+
+	return luc.ErrorService.NoError()
+}
+
+func (luc *LectureUseCase) RemoveTopic(topic, lectureID string) (int, error){
+	err := luc.LectureRepository.RemoveTopic(topic, lectureID)
+	if err != nil {
+		return luc.ErrorService.InternalServer()
+	}
+
+	err = luc.TopicRepository.DecrementTopicCount(topic, 1)
+	if err != nil {
+		return luc.ErrorService.InternalServer()
+	}
+
+	return luc.ErrorService.NoError()
+}

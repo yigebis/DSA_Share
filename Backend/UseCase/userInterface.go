@@ -7,7 +7,7 @@ import (
 
 type IUserUseCase interface {
 	LoginByEmail(email, password string) (string, string, int, error)
-	// LoginByPhone(phone, password string) (string, string, int, error)
+	LoginByUserName(userName, password string) (string, string, int, error)
 	Login(user *Domain.User, password string) (string, string, int, error)
 	GetSingleUser(email string) (*Domain.User, int, error)
 	Register(user *Domain.User) (int, error)

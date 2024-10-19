@@ -77,9 +77,6 @@ func (ur *UserRepository) UpdateUser(user *Domain.User) error {
 	if user.ProfilePhoto != "" {
 		update["profile_photo"] = user.ProfilePhoto
 	}
-	if user.UserName != "" {
-		update["user_name"] = user.UserName
-	}
 	if user.Password != "" {
 		update["password"] = user.Password
 	}

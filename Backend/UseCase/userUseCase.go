@@ -144,17 +144,17 @@ func (uuc *UserUseCase) LoginByEmail(email, password string) (string, string, in
 	return uuc.Login(user, password)	
 }
 
-// func (uuc *UserUseCase) LoginByPhone(phone, password string) (string, string, int, error){
-// 	// try to get the user with this phone
-// 	user, err := uuc.UserRepo.GetUserByPhone(phone)
+func (uuc *UserUseCase) LoginByUserName(userName, password string) (string, string, int, error){
+	// try to get the user with this user name
+	user, err := uuc.UserRepo.GetUserByUserName(userName)
 
-// 	if err != nil{
-// 		code, err := uuc.ErrorService.InvalidPhonePassword()
-// 		return "", "", code, err
-// 	}
+	if err != nil{
+		code, err := uuc.ErrorService.InvalidUserNamePassword()
+		return "", "", code, err
+	}
 
-// 	return uuc.Login(user, password)	
-// }
+	return uuc.Login(user, password)	
+}
 
 func (uuc *UserUseCase) Login(user *Domain.User, password string) (string, string, int, error){
 	//check if the user is verified or the account is activated
