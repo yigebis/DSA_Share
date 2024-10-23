@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 function Footer(){
 return(
     <>
-    <div className="flex  flex-col justify-center items-center absoulte bg-black bottom-0 w-full">
+    <div className="flex  flex-col justify-center items-center bg-black  w-full  min-h-screen">
     <ul className="flex space-x-8 justify-center  bg-black text-white ">
     <Link to="https://github.com/naol16" target="_blank"><li className="text-2xl"><FaGithub/></li></Link>
     <Link to="https://www.linkedin.com/in/yigerem-bisrat-73bb92254/" target=""><li className="text-2xl"><FaLinkedin/></li></Link>

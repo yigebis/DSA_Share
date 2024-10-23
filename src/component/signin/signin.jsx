@@ -1,13 +1,15 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Await, useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import axiosurl from '../../axios';
+
 function Signin() {
   const navigate=useNavigate();
 
   const useremail = useRef();
   const userpassword = useRef();
-  const  handleSubmit=(e)=>{
+  const  handleSubmit=async(e)=>{
    e.preventDefault();
     const useremailValue = useremail.current.value;
     const userpasswordValue = userpassword.current.value;
@@ -23,14 +25,24 @@ function Signin() {
     else {
 
     alert("there is full information");
+    try{
+
+      const response= await axiosurl.post('/login',{
+        useremailValue,
+        userpasswordValue
+      })
+    }
+    catch(error){
+
+    }
     console.log("Mock registration data:", {
       useremail: useremailValue,
       password: userpasswordValue,
   });
-    navigate("/signup");
+
+    navigate("/dashboard");
 
    }
-
   }
 return (
 

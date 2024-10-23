@@ -5,10 +5,12 @@ function Signin2(){
   
 
     return(
-
+        <div className="  min-hscreen">
         <Layout>
         <Signin/>
         </Layout>
+        </div>
+        
     
     )
 
