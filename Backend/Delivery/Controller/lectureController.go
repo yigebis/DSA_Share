@@ -55,6 +55,18 @@ func (lc *LectureController) GetAllLectures(ctx *gin.Context){
 	ctx.JSON(code, lectures)
 }
 
+func (lc *LectureController) GetLecturesOf(ctx*gin.Context){
+	userName := ctx.Param("user_name")
+
+	lectures, code, err := lc.LectureUseCase.GetLecturesOf(userName)
+	if err != nil{
+		ctx.JSON(code, gin.H{"error" : err.Error()})
+		return
+	}
+
+	ctx.JSON(code, lectures)
+}
+
 func (lc *LectureController) GetLecture(ctx *gin.Context){
 	id := ctx.Param("id")
 	lecture, code, err := lc.LectureUseCase.GetLectureByID(id)
@@ -129,4 +141,31 @@ func (lc *LectureController) RemoveTopic(ctx *gin.Context){
 	}
 
 	ctx.JSON(code, gin.H{"message" : "topic removed successfully"})
+}
+
+func (lc *LectureController) SearchLectures(ctx *gin.Context){
+	var query = make(map[string]interface{})
+	title := ctx.Query("title")
+	author := ctx.Query("author")
+	topics := ctx.QueryArray("topics")
+
+	lastID := ctx.Query("last_id")
+
+	if title != ""{
+		query["title"] = title
+	}
+	if author != ""{
+		query["author"] = author
+	}
+	if len(topics) > 0{
+		query["topics"] = topics
+	}
+
+	lectures, code, err := lc.LectureUseCase.SearchLectures(&query, lastID)
+	if err != nil{
+		ctx.JSON(code, gin.H{"error" : err.Error()})
+		return
+	}
+
+	ctx.JSON(code, lectures)
 }

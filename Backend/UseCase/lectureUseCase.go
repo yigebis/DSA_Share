@@ -58,6 +58,17 @@ func (luc *LectureUseCase) GetAllLectures() (*[]Domain.Lecture, int, error){
 	return lectures, code, err
 }
 
+func (luc *LectureUseCase) GetLecturesOf(userName string) (*[]Domain.Lecture, int, error){
+	lectures, err := luc.LectureRepository.GetLecturesOf(userName)
+	if err != nil {
+		code, err := luc.ErrorService.LectureNotFound()
+		return nil, code, err
+	}
+
+	code, err :=luc.ErrorService.NoError()
+	return lectures, code, err
+}
+
 func (luc *LectureUseCase) GetLectureByID(id string) (*Domain.Lecture, int, error){
 	// read the lecture from the database
 	lecture, err := luc.LectureRepository.GetLectureByID(id)
@@ -117,4 +128,18 @@ func (luc *LectureUseCase) RemoveTopic(topic, lectureID string) (int, error){
 	}
 
 	return luc.ErrorService.NoError()
+}
+
+func (luc *LectureUseCase) SearchLectures(query *map[string]interface{}, lastID string) (*[]Domain.Lecture, int, error){
+	// define business rules
+	pageSize := 20
+
+	lectures, err := luc.LectureRepository.SearchLectures(query, lastID, pageSize)
+	if err != nil {
+		code, err := luc.ErrorService.InternalServer()
+		return nil, code, err
+	}
+
+	code, err := luc.ErrorService.NoError()
+	return lectures, code, err
 }

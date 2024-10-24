@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type LectureRepository struct{
@@ -53,12 +54,32 @@ func(lr *LectureRepository)	GetAllLectures() (*[]Domain.Lecture, error){
 	return &lectures, err
 }
 
+func (lr *LectureRepository) GetLecturesOf(userName string) (*[]Domain.Lecture, error){
+	var lectures []Domain.Lecture
+
+	filter := bson.M{"author" : userName}
+
+	cursor, err := lr.Collection.Find(lr.DbCtx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	defer cursor.Close(lr.DbCtx)
+
+	err = cursor.All(lr.DbCtx, &lectures)
+	if err != nil {
+		return nil, err
+	}
+
+	return &lectures, nil
+}
+
 func (lr *LectureRepository) EditLecture(lecture *Domain.Lecture) error{
 	filter := bson.M{"_id" : lecture.ID}
 	var update = bson.M{}
 
 	update["last_modified_date"] = lecture.LastModifiedDate
-	if lecture.Content != ""{
+	if len(lecture.Content) > 0{
 		update["content"] = lecture.Content
 	}
 	if lecture.Title != ""{
@@ -104,4 +125,42 @@ func (lr *LectureRepository) RemoveTopic(topic, lectureID string) error{
 
 	_, err = lr.Collection.UpdateOne(lr.DbCtx, filter, update)
 	return err
+}
+
+func (lr *LectureRepository) SearchLectures(query *map[string]interface{}, lastID string, pageSize int) (*[]Domain.Lecture, error){
+	var lectures []Domain.Lecture
+	filter := bson.M{}
+		
+	for key, value := range *query{
+		if key != "topics"{
+			filter[key] = value
+		}
+	}
+
+	if val, exists := (*query)["topics"]; exists{
+		filter["topics"] = bson.M{"$all" : val}
+	}
+
+	if lastID != ""{
+		objectID, err := primitive.ObjectIDFromHex(lastID)
+        if err != nil {
+            // fmt.Println("Invalid ObjectID:", err)
+            return nil, err
+        }
+		filter["_id"] = bson.M{"$gt" : objectID}
+	}
+
+	findOptions := options.Find()
+	findOptions.SetLimit(int64(pageSize))
+
+	cursor, err := lr.Collection.Find(lr.DbCtx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	defer cursor.Close(lr.DbCtx)
+
+	err = cursor.All(lr.DbCtx, &lectures)
+
+	return &lectures, err
 }

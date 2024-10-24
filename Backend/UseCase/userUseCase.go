@@ -83,7 +83,7 @@ func (uuc *UserUseCase) Register(user *Domain.User) (int, error){
 	expiryDuration := time.Now().Add(time.Second * time.Duration(seconds)).Unix()
 
 	// send verification email
-	token, err := uuc.TokenService.GenerateToken(user.Email, user.FirstName, expiryDuration)
+	token, err := uuc.TokenService.GenerateToken(user.Email, user.UserName, expiryDuration)
 	if err != nil {
 		fmt.Println("token_mail")
 		return uuc.ErrorService.InternalServer()
@@ -176,13 +176,13 @@ func (uuc *UserUseCase) Login(user *Domain.User, password string) (string, strin
 	refresher_seconds, _ := strconv.Atoi(uuc.RefresherExpiry)
 	refresherExpiry := time.Now().Add(time.Second * time.Duration(refresher_seconds)).Unix()
 
-	token, err := uuc.TokenService.GenerateToken(user.Email, user.FirstName, tokenExpiry)
+	token, err := uuc.TokenService.GenerateToken(user.Email, user.UserName, tokenExpiry)
 	if err != nil{
 		code, err := uuc.ErrorService.InternalServer()
 		return "", "", code, err
 	}
 
-	refresher, err := uuc.TokenService.GenerateToken(user.Email, user.FirstName, refresherExpiry)
+	refresher, err := uuc.TokenService.GenerateToken(user.Email, user.UserName, refresherExpiry)
 	if err != nil{
 		code, err := uuc.ErrorService.InternalServer()
 		return "", "", code, err
@@ -225,11 +225,11 @@ func (uuc *UserUseCase) RefreshToken(email, refresher string) (string, int, erro
 		return "", code, err
 	}
 
-	firstName := claims["firstName"]
+	userName := claims["userName"]
 	token_seconds, _ := strconv.Atoi(uuc.TokenExpiry)
 	tokenExpiry := time.Now().Add(time.Second * time.Duration(token_seconds)).Unix()
 
-	token, err := uuc.TokenService.GenerateToken(email, firstName.(string), tokenExpiry)
+	token, err := uuc.TokenService.GenerateToken(email, userName.(string), tokenExpiry)
 	if err != nil {
 		code, err := uuc.ErrorService.InternalServer()
 		return "", code, err

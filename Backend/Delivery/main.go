@@ -58,6 +58,7 @@ func main(){
 	lr := Repository.NewLectureRepository(lecture_context, lecture_collection)
 	topr := Repository.NewTopicRepository(topic_collection, topic_context)
 	tr := Repository.NewTokenRepository(token_context, token_collection)
+	fr := Repository.NewFileRepository()
 
 	jwtSecret := os.Getenv("JWT_SECRET")
 	ps := Infrastructure.NewPasswordService()
@@ -71,13 +72,15 @@ func main(){
 
 	uuc := UseCase.NewUserUseCase(ur, ps, tr, ts, ms, es, ex, tx, rx)
 	luc := UseCase.NewLectureUseCase(lr, topr, ur, es)
-
+	fuc := UseCase.NewFileUseCase(fr, es)
+	uploadDir := os.Getenv("UPLOAD_DIR")
 
 	// setting up the controllers
 	user_controller := Controller.NewUserController(uuc, ts)
 	lecture_controller := Controller.NewLectureController(luc)
+	file_controller := Controller.NewFileController(uploadDir, fuc)
 
 	// setting up the router
-	router := Router.NewRouter(user_controller, lecture_controller, jwtSecret)
+	router := Router.NewRouter(user_controller, lecture_controller, file_controller, jwtSecret)
 	router.Run()
 }

@@ -16,10 +16,10 @@ func NewTokenService(jwtSecret string) UseCase.ITokenService {
 }
 
 // GenerateToken implements UseCase.ITokenService.
-func (ts *TokenService) GenerateToken(email string, firstName string, expiryDuration int64) (string, error) {
+func (ts *TokenService) GenerateToken(email string, userName string, expiryDuration int64) (string, error) {
 	claims := jwt.MapClaims{
 		"email" : email,
-		"firstName" : firstName,
+		"user_name" : userName,
 		"expiryDuration" : expiryDuration,
 	}
 
