@@ -65,7 +65,7 @@ func (c *UserController) VerifyEmail(ctx *gin.Context){
 	ctx.JSON(code, gin.H{"message" : "email verified successfully"})
 }
 
-func (c *UserController) Login(ctx *gin.Context){
+func (c *UserController) LoginByEmail(ctx *gin.Context){
 	credential := Domain.Credential{}
 	err := ctx.ShouldBindJSON(&credential)
 
@@ -77,10 +77,41 @@ func (c *UserController) Login(ctx *gin.Context){
 	var token, refresher string
 	var code int
 
-	if credential.Email != "" &&credential.Password != ""{
-		token, refresher, code, err = c.UserUseCase.LoginByEmail(credential.Email, credential.Password)
+	if credential.Identifier != "" &&credential.Password != ""{
+		token, refresher, code, err = c.UserUseCase.LoginByEmail(credential.Identifier, credential.Password)
 	}else{
 		ctx.JSON(code, gin.H{"error" : "email and password are required"})
+		return
+	}
+	
+
+	if err != nil{
+		ctx.JSON(code, gin.H{"error" : err.Error()})
+		return
+	}
+
+	ctx.JSON(code, gin.H{
+		"token" : token,
+		"refresher" : refresher,
+	})
+}
+
+func (c *UserController) LoginByUserName(ctx *gin.Context){
+	credential := Domain.Credential{}
+	err := ctx.ShouldBindJSON(&credential)
+
+	if err != nil{
+		ctx.JSON(400, gin.H{"error" : "invalid request payload"})
+		return
+	}
+
+	var token, refresher string
+	var code int
+
+	if credential.Identifier != "" &&credential.Password != ""{
+		token, refresher, code, err = c.UserUseCase.LoginByUserName(credential.Identifier, credential.Password)
+	}else{
+		ctx.JSON(code, gin.H{"error" : "user_name and password are required"})
 		return
 	}
 	
