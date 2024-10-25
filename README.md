@@ -7,3 +7,6 @@ Golang, Gin framework, MongoDB, JWT based authentication
 ### Frontend   
 React.js, Tailwind CSS
 
+### Developers  
+#### Naol Lemessa - Frontend Developer
+#### Yigerem Bisrat - Backend Developer
