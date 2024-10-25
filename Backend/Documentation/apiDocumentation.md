@@ -1,7 +1,7 @@
 # ShopOps API Documentation
 
 ## Overview
-The `DSAShare` API allows shop owners to register, log in, verify emails. All requests and responses use JSON format, and the API requires authentication via JWT tokens for specific routes.
+The `DSAShare` API allows Programmers to register, log in, verify emails. All requests and responses use JSON format, and the API requires authentication via JWT tokens for specific routes.
 
 ### Base URL
 `http://localhost:8080/`
