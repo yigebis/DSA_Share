@@ -1,21 +1,86 @@
-import React from "react"
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { Children } from "react"
+import { useState,useEffect } from "react";
+import { Link, Navigate } from "react-router-dom";
 import  SearchIcon from '@mui/icons-material/Search';
 import Brightness4Icon from '@mui/icons-material/Brightness4'; // Moon Icon for Dark Mode
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Button } from "@mui/material";
-import { useContext } from "react";
+import { useContext,createContext } from "react";
 import { Darkcontext } from "../../App";
+import axiosurl from "../../axios";
+import { useNavigate } from "react-router-dom";
+
 function Header(){
+  const navigate=useNavigate()
+
+  // useEffect(
+  //  async ()=>{
+  //   try{
+
+  //this  api is going to  give us  the title  all dsa's there 
+  //    const value= await  axiosurl.get('our api')
+      // here the value.data  should be   object 
+     //   const data=JSON.parse(value.data)
+     //
+  // we will the value for searching purpose
+  // Setobject(data)
+
+  //   }
+  //   catch(error){
+  //     console.log(error);
+  //   }
+  //   }
+  //   ,[]
+  // )
+  const [fetcheddata,Setfetchdata]=useState()
    const [toggleMenu, setToggleMenu] = useState(false);
    const {show,Setshow}=useState(false)
-   const {dark,toggler}  =  useContext(Darkcontext)
+   const {dark,toggler}  = useContext(Darkcontext)
+   const [searchitem,Setsearchietm]=useState('')
+   const items=[]
+   const [filtered,Setfiltered]= useState([])
+   const [listappear,Setlistappear]=useState(false)
+   const content=createContext()
+   const [object,Setobject]=useState([ {
+      name:"naola",
+      id:1329/14
+    },
+    {
+      name:"misgana",
+      id:1324/14
+    },
+    {
+      name:"sudeyis",
+      id:1524/14
+    }
+   ]
+  )
 
+
+   const handlesolutions=async (element)=>{
+    try{
+      navigate(`/solution/?element=${element}`)
+ }
+    catch(error){
+      console.error("here is the error",error)
+    }
+  }
     const shower=()=>{
        Setshow(!show)
     
+    }
+    const handleinput=(e)=>{
+      const value=e.target.value
+      Setlistappear(true)
+      Setsearchietm(value)
+      const filteredlist =object.filter((object)=>(object.name.toLowerCase().includes(searchitem.toLowerCase())))
+      Setfiltered(filteredlist)
+
+    }
+    const handlevariable =()=>{
+      const newvalue=!listappear
+      Setlistappear(newvalue)
     }
 
     return(
@@ -28,7 +93,27 @@ function Header(){
         <div className="flex space-x-8 justify-center">
           <li><Link to="/" >home</Link></li>
           <li><Link to ="">About</Link></li>
-          <li><SearchIcon/></li>
+          <li onClick={handlevariable}><SearchIcon/>
+          <input
+          type="text"
+          value={searchitem}
+          onChange={handleinput}
+          placeholder="type the title of dsa"
+          className="text-black w-[20vw] "
+          >
+          </input>
+          { listappear && <ul  className="bg-white  h-[35vh]  w-[50vw] fixed z-[100]">
+          {
+            filtered.map((element,index)=>(
+              <li className="text-black pl-5" key={index}  onclick={handlesolutions}>
+                {element.name}
+              </li>
+            ))
+          }
+          
+          </ul>
+}
+          </li>
           
        
           </div>

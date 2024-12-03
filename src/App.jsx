@@ -7,6 +7,7 @@ import Footer from "./component/footer/footer"
 import Dashboardpage from "./pages/dashboard/dashboardpage"
 import { createContext,useState } from "react"
 import Share from "./pages/share/share"
+import Elements from "./component/elements/elements"
 
 const Darkcontext=createContext();
 
@@ -41,6 +42,10 @@ function App() {
         <Route path="/about" element={<Footer/>}></Route>
         <Route path="/videoupload"   element={<Share/>}></Route>
         <Route path="/dashboard"  element={<Dashboardpage/>}></Route>
+        <Route path="/soultion"    element={<Shareolutions/>}></Route>
+        <Route path="/soultion/element" element={Elements}></Route>
+
+        {/* <Route  path="/mycourses"  element={}></Route> */}
       </Routes>
      </Router>
     </DarkMode>
